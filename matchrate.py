@@ -11,10 +11,10 @@ def calculate_match_rate(data):
     data_copy.set_index('Datum', inplace=True)
 
     # Resample the data into 7-day periods and calculate the number of matches and likes in each period
-    resampled_data = data_copy.resample('7D').agg({'Likes': 'sum', 'Matches': 'sum'})
+    resampled_data = data_copy.resample('7D').agg({'swipes_likes': 'sum', 'matches': 'sum'})
 
     # Calculate the match rate as matches divided by likes, and add it as a new column in the DataFrame
-    resampled_data['Match Rate'] = (resampled_data['Matches'] / resampled_data['Likes'])*100
+    resampled_data['Match Rate'] = (resampled_data['matches'] / resampled_data['swipes_likes'])*100
 
     # Return the resulting DataFrame
     return resampled_data

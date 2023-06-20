@@ -17,8 +17,8 @@ def create_histogram(data, plot_frame, x_label, y_label, title, likes_color="blu
 
     # Create the histogram
     fig, ax = plt.subplots(figsize=fig_size)
-    ax.plot(data[x_label], data["Likes"], label="Likes", marker="o", linestyle="--", color=likes_color)
-    ax.plot(data[x_label], data["Passes"], label="Passes", marker="s", linestyle="-", color=passes_color)
+    ax.plot(data[x_label], data["swipes_likes"], label="Likes", marker="o", linestyle="--", color=likes_color)
+    ax.plot(data[x_label], data["swipes_passes"], label="Passes", marker="s", linestyle="-", color=passes_color)
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     ax.set_title(title)
@@ -36,7 +36,7 @@ def create_7d_histogram(data, plot_frame):
     data["Bins"] = data["Datum"].dt.floor("7D")
 
     # Group the data by bins and calculate the sum of likes and passes
-    grouped_data = data.groupby("Bins").agg({"Likes": "sum", "Passes": "sum"}).reset_index()
+    grouped_data = data.groupby("Bins").agg({"swipes_likes": "sum", "swipes_passes": "sum"}).reset_index()
 
     # Create the histogram using different colors for likes and passes
     create_histogram(grouped_data, plot_frame, "Bins", "Likes and Passes per 7-day Interval", "Likes and Passes per 7-day Interval", likes_color="blue", passes_color="green", x_ticks_rotation=45)
@@ -47,7 +47,7 @@ def create_30d_histogram(data, plot_frame):
     data["Bins"] = data["Datum"].dt.floor("30D")
 
     # Group the data by bins and calculate the sum of likes and passes
-    grouped_data = data.groupby("Bins").agg({"Likes": "sum", "Passes": "sum"}).reset_index()
+    grouped_data = data.groupby("Bins").agg({"swipes_likes": "sum", "swipes_passes": "sum"}).reset_index()
 
     # Create the histogram using different colors for likes and passes
     create_histogram(grouped_data, plot_frame, "Bins", "Likes and Passes per 30-day Interval", "Likes and Passes per 30-day Interval", likes_color="blue", passes_color="green", x_ticks_rotation=45)
@@ -68,7 +68,7 @@ def create_7d_matchrate_histogram(data, plot_frame):
     ax1.tick_params(axis='y', labelcolor='blue')
 
     # Plot likes as a green line on the right y-axis
-    ax2.plot(data_7d.index, data_7d['Likes'], color='green', label='Likes')
+    ax2.plot(data_7d.index, data_7d['swipes_likes'], color='green', label='Likes')
     ax2.set_ylabel('Likes', color='green')
     ax2.tick_params(axis='y', labelcolor='green')
 
@@ -87,7 +87,3 @@ def create_7d_matchrate_histogram(data, plot_frame):
 
     # Pack the canvas into the given frame
     canvas.get_tk_widget().pack(fill='both', expand=True)
-
-def calculate_total_swipes(data):
-    return data
-    data['Total_Swipes'] = data['Likes'] + data['Passes']
