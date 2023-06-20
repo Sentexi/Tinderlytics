@@ -7,13 +7,13 @@ import json
 # Function to create binned DataFrames
 def create_binned_dataframes(df):
     # Ensure the 'Date' column is in datetime format
-    df['Date'] = pd.to_datetime(df['Date'])
+    df['Datum'] = pd.to_datetime(df['Datum'])
     
     # Create 7-day DataFrame
-    df_7D = df.groupby(pd.Grouper(key='Date', freq='7D')).sum()
+    df_7D = df.groupby(pd.Grouper(key='Datum', freq='7D')).sum()
     
     # Create 30-day DataFrame
-    df_30D = df.groupby(pd.Grouper(key='Date', freq='30D')).sum()
+    df_30D = df.groupby(pd.Grouper(key='Datum', freq='30D')).sum()
     
     # Save the 7-day DataFrame to CSV
     df_7D.to_csv(f'{extraction_folder}/Tinder7D.csv')
@@ -45,7 +45,7 @@ if os.path.exists('Data/myData.zip'):
         
         # Include the index in a separate column
         df.reset_index(inplace=True)
-        df.rename(columns={"index": "Date"}, inplace=True)
+        df.rename(columns={"index": "Datum"}, inplace=True)
         
         # Append the "Swipes" column
         swipes_likes = df.get("swipes_likes", 0)
