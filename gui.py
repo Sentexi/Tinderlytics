@@ -1,5 +1,6 @@
+import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,17 +12,20 @@ from methods import(
     create_7d_matchrate_histogram,
 )
 import matchrate
+import load_data
 
 # Constants
 WINDOW_TITLE = 'Data Exploration'
 WINDOW_SIZE = '800x600'
 
-def create_gui(data):
+def calc_gui(selected_folder):
+    data = load_data.load(selected_folder)
+
     # Create GUI window
     window = tk.Tk()
     window.title(WINDOW_TITLE)
     window.geometry(WINDOW_SIZE)
-    window.attributes('-fullscreen', True)  # Open the GUI in full-screen mode
+    #window.attributes('-fullscreen', True)  # Open the GUI in full-screen mode
 
     # Create the frame for the plot
     plot_frame = tk.Frame(window)
@@ -90,3 +94,49 @@ def create_gui(data):
     lbl_result.pack()
 
     return window
+    
+
+def explorer_gui():
+    def open_selected_item(event):
+        selected_item = tree.focus()
+        if selected_item:
+            item_type = tree.item(selected_item)['values'][1]
+            if item_type == 'Folder':
+                folder_path = tree.item(selected_item)['values'][0]
+                open_second_gui(folder_path)
+
+    def browse_directory(folder_path='Data'):
+        tree.delete(*tree.get_children())  # Clear the treeview
+        for item in os.listdir(folder_path):
+            item_path = os.path.join(folder_path, item)
+            if os.path.isdir(item_path):
+                tree.insert('', 'end', text=item, values=(item_path, 'Folder'))
+
+    def open_second_gui(selected_folder):
+        window.destroy()  # Hide the first GUI window
+        calc_gui(selected_folder)
+
+
+    window = tk.Tk()
+    window.title('Explorer')
+    window.geometry('600x400')
+
+    # Create the treeview widget
+    tree = ttk.Treeview(window)
+    tree.pack(fill=tk.BOTH, expand=True)
+    tree.bind('<<TreeviewSelect>>', open_selected_item)
+
+    # Create the columns
+    tree['columns'] = ('path', 'type')
+    tree.column('path', width=300)
+    tree.column('type', width=50)
+
+    # Define the column headings
+    tree.heading('#0', text='Name')
+    tree.heading('path', text='Path')
+    tree.heading('type', text='Type')
+
+    # Automatically browse the "Data" folder
+    browse_directory()
+
+    window.mainloop()
