@@ -55,7 +55,7 @@ These dependencies will be automatically installed during the installation proce
 
 ## Contributing
 
-Contributions to Tinderlytics are welcome! If you encounter any issues or have suggestions for improvements, please open an issue in the repository.
+Contributions to Tinderlytics are welcome! If you encounter any issues or have suggestions for improvements, please open an issue in the repository. Honestly at this point I'm happy if someone can make anything out of this code.
 
 ## License
 
