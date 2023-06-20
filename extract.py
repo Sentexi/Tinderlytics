@@ -21,10 +21,6 @@ def create_binned_dataframes(df):
     # Save the 30-day DataFrame to CSV
     df_30D.to_csv(f'{extraction_folder}/Tinder30D.csv')
 
-# Check if the folder 'Data' exists, and create it if it doesn't
-if not os.path.exists('Data'):
-    os.makedirs('Data')
-
 # Check if the zip file 'myData.zip' exists
 if os.path.exists('Data/myData.zip'):
     # Extract the zip file to a folder with the same name plus a timestamp

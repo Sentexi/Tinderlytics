@@ -18,6 +18,10 @@ import load_data
 WINDOW_TITLE = 'Data Exploration'
 WINDOW_SIZE = '800x600'
 
+# Check if the folder 'Data' exists, and create it if it doesn't
+if not os.path.exists('Data'):
+    os.makedirs('Data')
+
 def calc_gui(selected_folder):
     data = load_data.load(selected_folder)
 
