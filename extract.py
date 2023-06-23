@@ -49,8 +49,6 @@ def extract():
             swipes_passes = df.get("swipes_passes", 0)
             df["total_swipes"] = swipes_likes + swipes_passes
             
-            print('Transformed "Usage" subtypes to Pandas DataFrame:')
-            print(df)
             
             # Save the DataFrame to a CSV file
             csv_file_path = f'{extraction_folder}/Tinder.csv'
