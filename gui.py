@@ -113,19 +113,6 @@ def explorer_gui():
                 folder_path = tree.item(selected_item)['values'][0]
                 open_second_gui(folder_path)
 
-    def browse_directory():
-        tree.delete(*tree.get_children())  # Clear the treeview
-        zip_file = tk.filedialog.askopenfilename(filetypes=[('ZIP files', '*.zip')])
-        if zip_file:
-            extract_zip_file(zip_file)
-
-    def extract_zip_file(zip_file):
-        with zipfile.ZipFile(zip_file, 'r') as zf:
-            for item in zf.namelist():
-                item_path = os.path.join(zip_file, item)
-                if item.endswith('/'):  # Directory/folder
-                    tree.insert('', 'end', text=os.path.basename(item), values=(item_path, 'Folder'))
-
     def open_second_gui(selected_folder):
         window.destroy()  # Hide the first GUI window
         calc_gui(selected_folder)
@@ -145,6 +132,15 @@ def explorer_gui():
             destination = os.path.join("Data", "myData.zip")
             shutil.copy2(zip_file, destination)
             extract.extract()
+            populate_treeview()
+            
+    def populate_treeview():
+        tree.delete(*tree.get_children())  # Clear the treeview
+        base_path = "Data"
+        for item in os.listdir(base_path):
+            item_path = os.path.join(base_path, item)
+            if os.path.isdir(item_path):
+                tree.insert('', 'end', text=item, values=(item_path, 'Folder'))
 
     window = tkdnd.TkinterDnD.Tk()
     window.title('Explorer')
@@ -171,4 +167,5 @@ def explorer_gui():
     drop_label.drop_target_register(tkdnd.DND_FILES)
     drop_label.dnd_bind('<<Drop>>', handle_drop)
 
+    populate_treeview()
     window.mainloop()
