@@ -66,6 +66,8 @@ def create_7d_matchrate_histogram(data, plot_frame):
     ax1.bar(data_7d.index, data_7d['Match Rate'], width=5.0, color='blue', label='Match Rate')
     ax1.set_ylabel('Match Rate', color='blue')
     ax1.tick_params(axis='y', labelcolor='blue')
+    # error bars
+    ax1.errorbar(data_7d.index, data_7d['Match Rate'], yerr=data_7d['Error'], fmt='none', color='black', capsize=5)
 
     # Plot likes as a green line on the right y-axis
     ax2.plot(data_7d.index, data_7d['swipes_likes'], color='green', label='Likes')

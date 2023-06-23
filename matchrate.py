@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def calculate_match_rate(data):
     # Create a copy of the input DataFrame to avoid modifying the original data
@@ -15,6 +16,7 @@ def calculate_match_rate(data):
 
     # Calculate the match rate as matches divided by likes, and add it as a new column in the DataFrame
     resampled_data['Match Rate'] = (resampled_data['matches'] / resampled_data['swipes_likes'])*100
+    resampled_data['Error'] = np.sqrt((resampled_data['Match Rate'] * (1 - resampled_data['Match Rate'])) / resampled_data['swipes_likes'])
 
     # Return the resulting DataFrame
     return resampled_data
