@@ -1,5 +1,6 @@
 import os
 import tkinter as tk
+import tkinterdnd2 as tkdnd
 from tkinter import ttk, messagebox
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 import pandas as pd
@@ -13,6 +14,9 @@ from methods import(
 )
 import matchrate
 import load_data
+import zipfile
+import shutil
+import extract
 
 # Constants
 WINDOW_TITLE = 'Data Exploration'
@@ -109,19 +113,40 @@ def explorer_gui():
                 folder_path = tree.item(selected_item)['values'][0]
                 open_second_gui(folder_path)
 
-    def browse_directory(folder_path='Data'):
+    def browse_directory():
         tree.delete(*tree.get_children())  # Clear the treeview
-        for item in os.listdir(folder_path):
-            item_path = os.path.join(folder_path, item)
-            if os.path.isdir(item_path):
-                tree.insert('', 'end', text=item, values=(item_path, 'Folder'))
+        zip_file = tk.filedialog.askopenfilename(filetypes=[('ZIP files', '*.zip')])
+        if zip_file:
+            extract_zip_file(zip_file)
+
+    def extract_zip_file(zip_file):
+        with zipfile.ZipFile(zip_file, 'r') as zf:
+            for item in zf.namelist():
+                item_path = os.path.join(zip_file, item)
+                if item.endswith('/'):  # Directory/folder
+                    tree.insert('', 'end', text=os.path.basename(item), values=(item_path, 'Folder'))
 
     def open_second_gui(selected_folder):
         window.destroy()  # Hide the first GUI window
         calc_gui(selected_folder)
+        # Add your code for the second GUI window here
+        pass
 
+    def handle_drop(event):
+        print("handling drop")
+        zip_file = None
+        file = event.data
+        if os.path.isfile(file) and file.endswith('.zip'):
+            zip_file = file
+        else:
+            print("File is not a zip file")
+        if zip_file:
+            print(zip_file)
+            destination = os.path.join("Data", "myData.zip")
+            shutil.copy2(zip_file, destination)
+            extract.extract()
 
-    window = tk.Tk()
+    window = tkdnd.TkinterDnD.Tk()
     window.title('Explorer')
     window.geometry('600x400')
 
@@ -140,7 +165,10 @@ def explorer_gui():
     tree.heading('path', text='Path')
     tree.heading('type', text='Type')
 
-    # Automatically browse the "Data" folder
-    browse_directory()
+    # Enable drag and drop functionality
+    drop_label = tk.Label(window, text="Drop ZIP file here", justify=tk.CENTER)
+    drop_label.pack(fill=tk.BOTH, padx=10, pady=10)
+    drop_label.drop_target_register(tkdnd.DND_FILES)
+    drop_label.dnd_bind('<<Drop>>', handle_drop)
 
     window.mainloop()
